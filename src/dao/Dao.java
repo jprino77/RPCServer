@@ -22,6 +22,8 @@ public class Dao {
 	private static final String getDeportesByFilialId = "select distinct de.id, de.descripcion from cancha ca "
 			+ " inner join deporte de on de.id = ca.deporte_id" + " where ca.filial_id =  ?";
 	
+	private static final String getNombreUsuarioFromId = " select nombre from usuario where numero_afiliado_legajo = ? ";
+	
 	public boolean crearUsuario(Usuario usuario, Connection con) throws SQLException {
 
 		CallableStatement statement = con.prepareCall(crearUsuario);
@@ -75,6 +77,24 @@ public class Dao {
 			deporteList.add(deporte);
 		}
 		return deporteList;
+	}
+	
+	public String getNombreUsuarioFromId(int id, Connection con) throws SQLException {
+		String respuesta = "";
+		
+		PreparedStatement statement = con.prepareStatement(getNombreUsuarioFromId);
+		statement.setInt(1, id);
+		
+		ResultSet rs = statement.executeQuery();
+
+		while (rs.next()) {
+
+			respuesta = rs.getString("nombre");
+
+		}
+		
+		return respuesta;
+		
 	}
 
 }

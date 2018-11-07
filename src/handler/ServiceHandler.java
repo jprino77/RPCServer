@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dao.Dao;
+import enums.MensajesExceptionsEnum;
 import server.Deporte;
 import server.Filial;
 import server.GenericException;
@@ -28,13 +29,72 @@ public class ServiceHandler implements Iface {
 	
 	@Override
 	public String getNombreUsuarioFromId(int id) throws NoSeEncontraronResultadosException, TException {
-		// TODO Auto-generated method stub
-		return null;
+		logger.info("Inico getNombreUsuarioFromId");
+		
+		String respuesta = "";
+		
+		Connection con = null;
+		Dao dao = new Dao();
+		try {
+			/**
+			 * Se abre coneccion aca porque dentro de un mismo servicio podrias tener
+			 * multiples llamados a daos de esta forma ahorras abrir varias y cerrar
+			 * conecciones por cada uno
+			 */
+			Class.forName(this.odbcDrive);
+			con = DriverManager.getConnection(this.db);
+
+			respuesta = dao.getNombreUsuarioFromId(id, con);
+			
+
+		} catch (ClassNotFoundException e) {
+			logger.error("Eror al cargar driver");
+			e.printStackTrace();
+			
+			NoSeEncontraronResultadosException ns = new NoSeEncontraronResultadosException();
+			ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+			ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+			
+			throw ns;
+		} catch (SQLException e) {
+			logger.error("Eror al ejecutar query");
+			e.printStackTrace();
+			
+			NoSeEncontraronResultadosException ns = new NoSeEncontraronResultadosException();
+			ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+			ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+			
+			throw ns;
+		} finally {
+			try {
+				con.close();
+
+			} catch (SQLException e) {
+				logger.error("Eror al cerrar coneccion");
+				e.printStackTrace();
+				
+				NoSeEncontraronResultadosException ns = new NoSeEncontraronResultadosException();
+				ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+				ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+				
+				throw ns;
+			}
+		}
+		
+		if(respuesta.equals("")) {
+			NoSeEncontraronResultadosException e = new NoSeEncontraronResultadosException();
+			e.setCodigo(MensajesExceptionsEnum.NO_EXISTE.getCodigo());
+			e.setDescripcion(MensajesExceptionsEnum.NO_EXISTE.getDescripcion());
+			
+			throw e;
+		}
+		
+		return respuesta;
 	}
 
 	@Override
 	public boolean crearUsuario(Usuario usuario) throws GenericException, TException {
-		logger.info("Inico existeUsuario");
+		logger.info("crearUsuario");
 		Connection con = null;
 		boolean exito = false;
 		Dao dao = new Dao();
@@ -53,9 +113,21 @@ public class ServiceHandler implements Iface {
 		} catch (ClassNotFoundException e) {
 			logger.error("Eror al cargar driver");
 			e.printStackTrace();
+			
+			GenericException ns = new GenericException();
+			ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+			ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+			
+			throw ns;
 		} catch (SQLException e) {
 			logger.error("Eror al ejecutar query");
 			e.printStackTrace();
+			
+			GenericException ns = new GenericException();
+			ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+			ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+			
+			throw ns;
 		} finally {
 			try {
 				con.close();
@@ -63,6 +135,12 @@ public class ServiceHandler implements Iface {
 			} catch (SQLException e) {
 				logger.error("Eror al cerrar coneccion");
 				e.printStackTrace();
+				
+				GenericException ns = new GenericException();
+				ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+				ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+				
+				throw ns;
 			}
 		}
 		
@@ -87,14 +165,25 @@ public class ServiceHandler implements Iface {
 
 			filial = dao.buscarFiliales(con);
 			
-			
 
 		} catch (ClassNotFoundException e) {
 			logger.error("Eror al cargar driver");
 			e.printStackTrace();
+			
+			NoSeEncontraronResultadosException ns = new NoSeEncontraronResultadosException();
+			ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+			ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+			
+			throw ns;
 		} catch (SQLException e) {
 			logger.error("Eror al ejecutar query");
 			e.printStackTrace();
+			
+			NoSeEncontraronResultadosException ns = new NoSeEncontraronResultadosException();
+			ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+			ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+			
+			throw ns;
 		} finally {
 			try {
 				con.close();
@@ -102,13 +191,19 @@ public class ServiceHandler implements Iface {
 			} catch (SQLException e) {
 				logger.error("Eror al cerrar coneccion");
 				e.printStackTrace();
+				
+				NoSeEncontraronResultadosException ns = new NoSeEncontraronResultadosException();
+				ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+				ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+				
+				throw ns;
 			}
 		}
 		
 		if(filial.isEmpty()) {
 			NoSeEncontraronResultadosException e = new NoSeEncontraronResultadosException();
-			e.setCodigo(1);
-			e.setDescripcion("Buescar Filiales: No Se encontraron Resultados");
+			e.setCodigo(MensajesExceptionsEnum.NO_EXISTE.getCodigo());
+			e.setDescripcion(MensajesExceptionsEnum.NO_EXISTE.getDescripcion());
 			
 			throw e;
 		}
@@ -132,9 +227,21 @@ public class ServiceHandler implements Iface {
 		} catch (ClassNotFoundException e) {
 			logger.error("Eror al cargar driver");
 			e.printStackTrace();
+			
+			NoSeEncontraronResultadosException ns = new NoSeEncontraronResultadosException();
+			ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+			ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+			
+			throw ns;
 		} catch (SQLException e) {
 			logger.error("Eror al ejecutar query");
 			e.printStackTrace();
+			
+			NoSeEncontraronResultadosException ns = new NoSeEncontraronResultadosException();
+			ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+			ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+			
+			throw ns;
 		} finally {
 			try {
 				con.close();
@@ -142,13 +249,19 @@ public class ServiceHandler implements Iface {
 			} catch (SQLException e) {
 				logger.error("Eror al cerrar coneccion");
 				e.printStackTrace();
+				
+				NoSeEncontraronResultadosException ns = new NoSeEncontraronResultadosException();
+				ns.setCodigo(MensajesExceptionsEnum.ERROR_INESPERADO.getCodigo());
+				ns.setDescripcion(MensajesExceptionsEnum.ERROR_INESPERADO.getDescripcion());
+				
+				throw ns;
 			}
 		}
 		
 		if(deporte.isEmpty()) {
 			NoSeEncontraronResultadosException e = new NoSeEncontraronResultadosException();
-			e.setCodigo(1);
-			e.setDescripcion("Buscar DeportesFiliakId: No Se encontraron Resultados");
+			e.setCodigo(MensajesExceptionsEnum.NO_EXISTE.getCodigo());
+			e.setDescripcion(MensajesExceptionsEnum.NO_EXISTE.getDescripcion());
 			
 			throw e;
 		}
