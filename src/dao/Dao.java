@@ -17,12 +17,15 @@ public class Dao {
 	
 	private static final String crearUsuario = "call CREAR_USUARIO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '00')";
 	
-	private static final String getFiliales = "select id, nombre from filial;";
+	private static final String getFiliales = "select  id, nombre, calle, altura from filial";
 	
-	private static final String getDeportesByFilialId = "select distinct de.id, de.descripcion from cancha ca "
+	private static final String getDeportesByFilialId = "select distinct de.id, de.codigo, de.descripcion from cancha ca "
 			+ " inner join deporte de on de.id = ca.deporte_id" + " where ca.filial_id =  ?";
 	
 	private static final String getNombreUsuarioFromId = " select nombre from usuario where numero_afiliado_legajo = ? ";
+	
+	
+	private static final String getDeporteById = " select id, codigo, descripcion from deporte where id = ?";
 	
 	public boolean crearUsuario(Usuario usuario, Connection con) throws SQLException {
 
@@ -72,6 +75,7 @@ public class Dao {
 			Deporte deporte = new Deporte();
 
 			deporte.setId(rs.getInt("id"));
+			deporte.setCodigo(rs.getString("codigo"));
 			deporte.setDescripcion(rs.getString("descripcion"));
 
 			deporteList.add(deporte);
@@ -95,6 +99,43 @@ public class Dao {
 		
 		return respuesta;
 		
+	}
+	
+	public Filial getFilialById(int id, Connection con) throws SQLException {
+		Filial filial = new Filial();
+
+		PreparedStatement statement = con.prepareStatement(getFiliales + " where id = ? ");
+		statement.setInt(1, id);
+		
+		ResultSet rs = statement.executeQuery();
+
+		while (rs.next()) {
+			
+
+			filial.setId(rs.getInt("id"));
+			filial.setNombre(rs.getString("nombre"));
+			filial.setCalle(rs.getString("calle"));
+			filial.setAltura(rs.getString("altura"));
+		}
+		return filial;
+	}
+	
+	
+	public Deporte getDeporteById(int id, Connection con) throws SQLException {
+		Deporte deporte = new Deporte();
+
+		PreparedStatement statement = con.prepareStatement(getDeporteById);
+		statement.setInt(1, id);
+		
+		ResultSet rs = statement.executeQuery();
+
+		while (rs.next()) {
+
+			deporte.setId(rs.getInt("id"));
+			deporte.setCodigo(rs.getString("codigo"));
+			deporte.setDescripcion(rs.getString("descripcion"));
+		}
+		return deporte;
 	}
 
 }

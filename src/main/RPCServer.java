@@ -6,13 +6,15 @@ import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
 import org.apache.thrift.transport.TTransportException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import handler.ServiceHandler;
 import server.Service;
 
 
 public class RPCServer {
-
+	final static Logger logger = LoggerFactory.getLogger(RPCServer.class);
 	public static ServiceHandler handler = new ServiceHandler();
 	public static Service.Processor<ServiceHandler> processor = new Service.Processor<ServiceHandler>(handler);
 	
@@ -32,7 +34,7 @@ public class RPCServer {
 			serverTransport = new TServerSocket(9090);
 			TServer server = new TSimpleServer(new Args(serverTransport).processor(processor));
 			
-			System.out.println("Iniciando el servidor...");
+			logger.info("Iniciando el servidor...");
 			server.serve();
 		} catch (TTransportException e) {
 			e.printStackTrace();
