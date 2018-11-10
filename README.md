@@ -13,3 +13,8 @@ thrift-0.11.0.exe --gen java ClubLosAmigos.trihft dentro de este ultimo se encue
 
 - Convertirlo a proyecto MAVEN:
     Eclipse: click derecho sobre el proyecto -> Configure -> convet to Maven project ..
+    
+# Como compilar y ejecutar
+
+- Desde cmd o terminal entrar a la carpeta del proyecto y ejecutar mvn clean install,  el jar se creara en la carpeta target
+- Para ejecutarlo correr java -jar RPCServer-jar-with-dependencies.jar (en caso de no estar dentro de la misma carpeta ejecutar java -jar path/RPCServer-jar-with-dependencies.jar)
