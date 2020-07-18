@@ -55,7 +55,7 @@
 		</dependency>
 	</dependencies>
 	<properties>
-		<thrift.version>0.11.0</thrift.version>
+		<thrift.version>0.12.0</thrift.version>
 		<org.slf4j.slf4j-simple.version>1.7.12</org.slf4j.slf4j-simple.version>
 		<org.slf4j.version>1.7.25</org.slf4j.version>
 		<slf4j-log4j12.version>1.7.5</slf4j-log4j12.version>
